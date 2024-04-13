@@ -1,18 +1,16 @@
 <?php
 require_once 'C:\xampp\htdocs\PHPVC\crud-animes\database\Database.php';
-abstract class Model extends Database
+class Model extends Database
 {
   protected string $tableName;
-  protected string $tableId;
+  protected string $tableNamePK;
   protected $fillable = [];
   public function __construct()
   {
     parent::__construct();
-    $this->tableName = $this->getTableName();
   }
-  abstract protected function getTableName(): string;
 
-  public function save(array $data)
+  public function create(array $data)
   {
     $filteredData = array_intersect_key($data, array_flip($this->fillable));
     $columns = implode(', ', array_keys($filteredData));
@@ -34,28 +32,17 @@ abstract class Model extends Database
 
   public function findByName(string $title): int
   {
-    $sql = "SELECT {$this->tableId} FROM {$this->tableName} WHERE title=?";
+    $sql = "SELECT {$this->tableNamePK} FROM {$this->tableName} WHERE title=?";
     $stmt = $this->executeStatement($sql, array('title' => $title));
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    return (int) $result["{$this->tableId}"];
+    return (int) $result["{$this->tableNamePK}"];
   }
 
-  public function findOne(array $data): array
+  public function findByIdAndDelete($id)
   {
-    $sql = "SELECT * FROM {$this->tableName} 
-              WHERE email = ? AND password = ?";
-    $stmt = $this->executeStatement($sql, $data);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-    $this->closeConnection();
-    return $result;
-  }
-
-  public function findByIdAndDelete(int $id): array
-  {
-    $sql = "DELETE FROM {$this->tableName} WHERE id = ?";
-    $stmt = $this->executeStatement($sql, array('id' => $id));
+    $sql = "DELETE FROM {$this->tableName} WHERE {$this->tableNamePK} = ?";
+    $stmt = $this->executeStatement($sql, array($this->tableNamePK => $id));
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
     $this->closeConnection();

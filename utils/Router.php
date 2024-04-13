@@ -23,16 +23,28 @@ class Router
 
   public function route($method, $url)
   {
-    $uriArray = explode("/", $url);
-    $uriArray = array_filter($uriArray);
-    $newUrl = "/" . $uriArray[4];
-    $parsedUrl = parse_url($newUrl);
-    $newUrl = $parsedUrl['path'];
-    if (isset($this->routes[$method][$newUrl])) {
-      $callback = $this->routes[$method][$newUrl];
-      call_user_func($callback);
-    } else {
-      echo "$newUrl 404 Not Found";
+    $uriArray = array_filter(explode("/", $url));
+    switch (count($uriArray)) {
+      case 4:
+        $parsedUrl = parse_url("/" . $uriArray[4]);
+        $newUrl = $parsedUrl['path'];
+        if (isset($this->routes[$method][$newUrl])) {
+          $callback = $this->routes[$method][$newUrl];
+          call_user_func($callback);
+        } else {
+          echo "$newUrl 404 Not Found";
+        }
+        break;
+      case 5:
+        $parsedUrl = parse_url("/" . $uriArray[4] . "/{id}");
+        $newUrl = $parsedUrl['path'];
+        if (isset($this->routes[$method][$newUrl])) {
+          $callback = $this->routes[$method][$newUrl];
+          call_user_func($callback, $uriArray[5]);
+        } else {
+          echo "$newUrl 404 Not Found";
+        }
+        break;
     }
   }
 }

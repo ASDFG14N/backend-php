@@ -8,16 +8,11 @@ header("Access-Control-Allow-Credentials: true");
 $uri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-$uriArray = explode("/", $uri);
-$uriArray = array_filter($uriArray);
-$newUrl = "/" . $uriArray[4];
-$parsedUrl = parse_url($newUrl);
-$newUrl = $parsedUrl['path'];
 
-if ($newUrl == '/animes' or $newUrl == '/anime' or $newUrl == '/animesdel') {
+if (strpos($uri, '/animes') or strpos($uri, '/anime')) {
   include './routes/anime.routes.php';
-} else if ($newUrl == '/login' or $newUrl == '/register') {
+} else if (strpos($uri, '/login') or strpos($uri, '/register') or strpos($uri, '/profile') ) {
   include './routes/auth.routes.php';
-} else {
+} else if(strpos($uri, '/chapters')) {
   include './routes/chapters.routes.php';
 }

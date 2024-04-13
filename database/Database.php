@@ -2,21 +2,21 @@
 require_once 'C:\xampp\htdocs\PHPVC\crud-animes\config\config.php';
 class Database
 {
-  protected $connection = null;
+  private static $connection = null;
   public function __construct()
   {
     try {
       $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE_NAME;
-      $this->connection = new PDO($dsn, DB_USERNAME, DB_PASSWORD);
-      $this->connection->exec('set names utf8');
+      Database::$connection = new PDO($dsn, DB_USERNAME, DB_PASSWORD);
+      Database::$connection->exec('set names utf8');
     } catch (PDOException $e) {
       throw new Exception("Could not connect to database: " . $e->getMessage());
     }
   }
-  public function executeStatement($query = "", $params = [])
+  public static function executeStatement($query = "", $params = [])
   {
     try {
-      $stmt = $this->connection->prepare($query);
+      $stmt = Database::$connection->prepare($query);
 
       if ($stmt === false) {
         throw new Exception("Unable to prepare statement: " . $query);
@@ -35,8 +35,8 @@ class Database
     }
   }
 
-  public function closeConnection()
+  public static function closeConnection()
   {
-    $this->connection = null;
+    Database::$connection = null;
   }
 }

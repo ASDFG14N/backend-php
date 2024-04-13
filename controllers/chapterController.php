@@ -1,13 +1,12 @@
 <?php
-include_once 'C:\xampp\htdocs\PHPVC\crud-animes\models\Chapter.model.php';
+include_once 'C:\xampp\htdocs\PHPVC\crud-animes\models\Chapter.php';
 class ChapterController
 {
-  public static function getChapters()
+  public static function getChapters($id)
   {
-    $id = isset($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
     $chapter = new Chapter();
     $chaptersFound = $chapter->findById($id);
-    if (!$chaptersFound) {
+    if ($chaptersFound == null) {
       http_response_code(400);
       print_r(json_encode([
         'message' => "Capitulos no encontrados",
@@ -26,11 +25,7 @@ class ChapterController
   public static function addChapter()
   {
     $dataArray = json_decode(file_get_contents('php://input'), true);
-    $newChapter = new Chapter(
-      title: trim($dataArray['title']),
-      video_url: trim($dataArray['video_url']),
-      fk_anime_id: trim($dataArray['id'])
-    );
-    $newChapter->save();
+    $newChapter = new Chapter();
+    $newChapter->create($dataArray);
   }
 }

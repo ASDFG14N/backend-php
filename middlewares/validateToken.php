@@ -1,14 +1,20 @@
 <?php
-function authRequired(): bool
+require_once 'C:\xampp\htdocs\PHPVC\crud-animes\vendor\autoload.php';
+require_once 'C:\xampp\htdocs\PHPVC\crud-animes\config\config.php';
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+function authRequired(): array
 {
   if (isset($_SERVER['HTTP_COOKIE'])) {
-    $cookieString = $_SERVER['HTTP_COOKIE'];
-    $cookieValue = str_replace('token=', '', $cookieString);
-    echo "Valor de la cookie: " . $cookieValue;
-    return true;
-  } else {
-    http_response_code(401);
-    echo "No autorizado";
+    $token = str_replace('token=', '', $_SERVER['HTTP_COOKIE']);
+    try {
+      $decoded = JWT::decode($token, new Key(TOKEN_KEY, 'HS256'));
+      return array(true, $decoded->id);
+    } catch (Exception $e) {
+    }
   }
-  return false;
+  http_response_code(401);
+  echo json_encode(['message' => 'Token inválido, acceso denegado']);
+  return array(false);
 }
