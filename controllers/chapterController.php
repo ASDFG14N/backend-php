@@ -16,16 +16,21 @@ class ChapterController
     print_r(json_encode($chaptersFound));
 
   }
-  public static function getChapter()
+  public static function getChapter($id)
   {
-    $id = isset($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
+    print_r($id);
     $chapter = new Chapter();
   }
 
   public static function addChapter()
   {
     $dataArray = json_decode(file_get_contents('php://input'), true);
+    $data = [
+      "title" => $dataArray['title'],
+      "fk_anime_id"=> $dataArray['title'],
+      "video_url"=> $dataArray['title']
+    ];
     $newChapter = new Chapter();
-    $newChapter->create($dataArray);
+    $newChapter->create($data);
   }
 }

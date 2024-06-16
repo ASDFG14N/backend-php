@@ -9,10 +9,18 @@ $uri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 
-if (strpos($uri, '/animes') or strpos($uri, '/anime')) {
+if (
+  strpos($uri, '/animes') 
+  or strpos($uri, '/movies') 
+  or strpos($uri, '/anime') 
+  or strpos($uri, '/status') 
+  or strpos($uri, '/genres')
+  ) {
   include './routes/anime.routes.php';
 } else if (strpos($uri, '/login') or strpos($uri, '/register') or strpos($uri, '/profile') ) {
   include './routes/auth.routes.php';
 } else if(strpos($uri, '/chapters')) {
   include './routes/chapters.routes.php';
+} else{
+  echo "Pagina no encontrada";
 }

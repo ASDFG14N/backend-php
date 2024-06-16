@@ -25,6 +25,52 @@ class AnimeController extends Controller
     print_r(json_encode($animeFound));
   }
 
+  public static function getMovies(int $type = 1)
+  {
+    $anime = new Anime();
+    $animesFound = $anime->findByType($type);
+    if (!$animesFound) {
+      http_response_code(404);
+      print_r(json_encode([
+        'message' => "Animes no encontrados",
+        "status" => 404
+      ]));
+      return;
+    }
+    print_r(json_encode($animesFound));
+  }
+
+  public static function getAnimesByStatus(int $state)
+  {
+    $anime = new Anime();
+    $animesFound = $anime->findByStatus($state);
+    if (!$animesFound) {
+      http_response_code(404);
+      print_r(json_encode([
+        'message' => "Animes no encontrados",
+        "status" => 404
+      ]));
+      return;
+    }
+    print_r(json_encode($animesFound));
+  }
+
+  public static function getAnimesByGenre()
+  {
+    $dataArray = json_decode(file_get_contents('php://input'), true);
+    $anime = new Anime();
+    $animesFound = $anime->findByGenres($dataArray);
+    if (!$animesFound) {
+      http_response_code(404);
+      print_r(json_encode([
+        'message' => "Animes no encontrados",
+        "status" => 404
+      ]));
+      return;
+    }
+    print_r(json_encode($animesFound));
+  }
+
   public static function store()
   {
     $dataArray = json_decode(file_get_contents('php://input'), true);

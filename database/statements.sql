@@ -174,3 +174,21 @@ SELECT name FROM genres
 RIGHT JOIN anime_genres
 ON anime_genres.fk_genre_id = genres.genre_id
 WHERE anime_genres.fk_anime_id = 5;
+
+
+/*Traer los animes segun el tipo*/
+select * from animes where type = 0;
+
+/*Traer los animes segun el año*/
+select * from animes where year = 2023;
+
+/*Traer los animes segun el estado*/
+select * from animes where status = 1;
+
+/*Traer los animes segun los generos*/
+SELECT ag1.fk_anime_id
+FROM anime_genres ag1
+JOIN anime_genres ag2 ON ag1.fk_anime_id = ag2.fk_anime_id
+WHERE ag1.fk_genre_id = 6 AND ag2.fk_genre_id = 12;
+
+SELECT * FROM animes WHERE title LIKE '%Kingd%';

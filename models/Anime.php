@@ -61,6 +61,51 @@ class Anime extends Model
     return $result;
   }
 
+  public function findByStatus(int $state)
+  {
+    $sql = "SELECT * FROM {$this->tableName} WHERE status=?";
+    $stmt = $this->executeStatement($sql, array('status' => $state));
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    $this->closeConnection();
+    return $result;
+  }
+
+  public function findByGenres(array $genres)
+  {
+    $sql = $this->generateQuery($genres);
+    $stmt = $this->executeStatement($sql, $genres);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    $this->closeConnection();
+    return $result;
+  }
+
+  public function findByType(int $type)
+  {
+    $sql = "SELECT * FROM {$this->tableName} WHERE type=?";
+    $stmt = $this->executeStatement($sql, array('type' => $type));
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    $this->closeConnection();
+    return $result;
+  }
+
+  private function generateQuery($genres) {
+    $sql = "SELECT ag1.fk_anime_id FROM anime_genres ag1";
+    for ($i = 2; $i <= count($genres); $i++) {
+        $sql .= " JOIN anime_genres ag{$i} ON ag1.fk_anime_id = ag{$i}.fk_anime_id";
+    }
+    $sql .= " WHERE";
+    for ($i = 1; $i <= count($genres); $i++) {
+        if ($i > 1) {
+            $sql .= " AND";
+        }
+        $sql .= " ag{$i}.fk_genre_id = ?";
+    }
+    return $sql;
+  }
+
   public function updateObj(array $data)
   {
     $sql = "UPDATE {$this->tableName} SET 

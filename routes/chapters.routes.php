@@ -8,5 +8,11 @@ $router = new Router();
 $router->get('/chapters/{id}', function ($id) {
   ChapterController::getChapters($id);
 });
+$router->get('/chapter/{id}', function ($id) {
+  ChapterController::getChapter($id);
+});
+$router->get('/chapters', function () {
+  ChapterController::addChapter();
+});
 
 $router->route($method, $uri);
